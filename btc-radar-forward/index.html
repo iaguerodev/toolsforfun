@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTC Radar Forward v0.14</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0d12;--card:#141821;--muted:#8f9bad;--fg:#edf2f7;--line:#252b38;--ok:#61d095;--warn:#f2c14e;--bad:#f07178}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif}
+main{max-width:900px;margin:auto;padding:28px 18px 60px}.head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px}.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}.row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:12px 0}.bar{height:12px;background:#242a35;border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--ok);border-radius:20px;transition:width .3s}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.big{font-size:30px;font-weight:700}.state{padding:8px 12px;border-radius:999px;background:#242a35;display:inline-block;font-weight:650}.error{color:var(--bad)}.ok{color:var(--ok)}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.head{display:block}.big{font-size:25px}}
+</style></head><body><main>
+<div class="head"><div><h1>BTC Radar · Forward Test</h1><div class="muted">v0.14 FROZEN · predicciones individuales ocultas</div></div><div id="state" class="state">cargando…</div></div>
+<div id="health" class="card"></div>
+<div class="grid"><section id="up" class="card"></section><section id="down" class="card"></section></div>
+<div class="card"><b>Qué significa 100%</b><p class="muted" id="note"></p></div>
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function metric(label,val,target){let p=Math.min(100,100*val/target);return `<div class=row><span>${label}</span><b>${val} / ${target}</b></div><div class=bar><div class=fill style="width:${p}%"></div></div>`}
+function sideCard(name,d,subtitle){return `<div class=muted>${subtitle}</div><h2>${name}</h2><div class=big>${d.progress_percent}%</div><div class=muted>progreso por cuello de botella</div>${metric('Eventos resueltos',d.resolved_events,d.target_events)}${metric('Expansiones',d.expansions,d.target_expansions)}${metric('Profiles únicos',d.unique_profiles,d.target_profiles)}<p class=muted>Pendientes: ${d.pending_events}. Faltan ${d.remaining.events} eventos, ${d.remaining.expansions} expansiones y ${d.remaining.profiles} profiles.</p>`}
+async function run(){try{let r=await fetch('forward_status.json?'+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);let d=await r.json();document.getElementById('state').textContent=d.state;let good=d.collector_health==='OK';document.getElementById('health').innerHTML=`<b class=${good?'ok':'error'}>${esc(d.collector_health)}</b><div class=muted>Actualizado: ${esc(d.updated_at_utc)}<br>Cobertura: ${esc(d.coverage_through_utc??'—')}</div>${d.last_error?`<p class=error>${esc(d.last_error)}</p>`:''}`;if(d.UP)document.getElementById('up').innerHTML=sideCard('UP',d.UP,'Exploración arriba · candidato fade SHORT');if(d.DOWN)document.getElementById('down').innerHTML=sideCard('DOWN',d.DOWN,'Exploración abajo · candidato fade LONG · T+3');document.getElementById('note').textContent=d.note||''}catch(e){document.getElementById('health').innerHTML='<b class=error>No se pudo leer el estado</b><p>'+esc(e)+'</p>'}}
+run(); setInterval(run,60000);
+</script></main></body></html>
