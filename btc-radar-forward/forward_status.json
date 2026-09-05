@@ -2,25 +2,25 @@
   "schema_version": "1.0",
   "version": "v0.14-FROZEN",
   "freeze_sha256": "9fb05aa5c2b4a1e9e621babaa1147474540dd4e608a4d300de8206cb80447118",
-  "updated_at_utc": "2026-09-04T16:12:05.198055+00:00",
-  "coverage_through_utc": "2026-09-04T00:00:00+00:00",
-  "collector_health": "WAITING_FIRST_COMPLETE_UTC_DAY",
+  "updated_at_utc": "2026-09-05T13:51:31.299848+00:00",
+  "coverage_through_utc": "2026-09-05T00:00:00+00:00",
+  "collector_health": "OK",
   "last_error": null,
   "state": "RECOPILANDO",
   "UP": {
-    "resolved_events": 0,
+    "resolved_events": 2,
     "target_events": 50,
     "expansions": 0,
     "target_expansions": 20,
-    "unique_profiles": 0,
+    "unique_profiles": 1,
     "target_profiles": 30,
     "pending_events": 0,
     "progress_percent": 0.0,
     "minimum_sample_reached": false,
     "remaining": {
-      "events": 50,
+      "events": 48,
       "expansions": 20,
-      "profiles": 30
+      "profiles": 29
     }
   },
   "DOWN": {
